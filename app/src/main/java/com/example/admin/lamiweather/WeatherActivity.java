@@ -1,5 +1,6 @@
 package com.example.admin.lamiweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.admin.lamiweather.gson.Forecast;
 import com.example.admin.lamiweather.gson.Weather;
+import com.example.admin.lamiweather.service.AutoUpdateService;
 import com.example.admin.lamiweather.util.HttpUtil;
 import com.example.admin.lamiweather.util.Utility;
 
@@ -86,6 +88,9 @@ public class WeatherActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         String bingPic = prefs.getString("bing_pic",null);
+
+
+
         if(bingPic!=null){
             Glide.with(this).load(bingPic).into(bingPicImg);
         }else{
@@ -166,8 +171,8 @@ public class WeatherActivity extends AppCompatActivity {
     private void showWeatherInfo(Weather weather){
         String cityName = weather.basic.cityName;
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
-        Log.d("123", "showWeatherInfo: "+weather.basic.update.updateTime);
-        Log.d("123", "showWeatherInfo: "+updateTime);
+        //Log.d("123", "showWeatherInfo: "+weather.basic.update.updateTime);
+        //Log.d("123", "showWeatherInfo: "+updateTime);
         String degree = weather.now.temperature+"℃";
         String weatherInfo = weather.now.more.info;
         titleCity.setText(cityName);
@@ -200,6 +205,9 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+        //开启后台自动更新服务
+        Intent intent = new Intent(this,AutoUpdateService.class);
+        startService(intent);
     }
 
     /**
